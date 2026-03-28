@@ -242,43 +242,109 @@ export default function ProfilePage() {
                </div>
             </section>
 
-            {/* Standard Dashboard Sections below... */}
-            <div className="border-t border-white/10 pt-10">
-               <div className="flex items-center gap-4 mb-8">
-                  <div className="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center">
-                    <Key className="w-5 h-5 text-slate-400" />
+            {/* API Keys Section (Restored & Form Fixed) */}
+            <form onSubmit={(e) => { e.preventDefault(); saveSettings(); }} className="border-t border-white/10 pt-10 space-y-8">
+               <div className="flex items-center gap-4 mb-2">
+                  <div className="w-10 h-10 bg-indigo-500/10 border border-indigo-500/20 rounded-xl flex items-center justify-center">
+                    <Key className="w-5 h-5 text-indigo-400" />
                   </div>
                   <div>
                     <h3 className="font-extrabold text-xl text-white tracking-tight">Personal API Integrations</h3>
-                    <p className="text-sm text-slate-500">Provide keys locally for your personal agent team.</p>
+                    <p className="text-sm text-slate-500">Provide your own model keys here. Keys are stored safely and locally in your browser.</p>
                   </div>
                </div>
                
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Reuse existing key inputs here if needed, or keep compact */}
-                   <input 
-                    type="password" 
-                    value={keys.openai}
-                    onChange={(e) => setKeys({...keys, openai: e.target.value})}
-                    placeholder="OpenAI API Key" 
-                    className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:ring-1 focus:ring-indigo-500/50 outline-none text-sm font-mono"
-                  />
-                  <input 
-                    type="password" 
-                    value={keys.gemini}
-                    onChange={(e) => setKeys({...keys, gemini: e.target.value})}
-                    placeholder="Google Gemini API Key" 
-                    className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:ring-1 focus:ring-indigo-500/50 outline-none text-sm font-mono"
-                  />
+               <div className="space-y-6">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-2 px-1">OpenAI / Codex API Key</label>
+                    <input 
+                      type="password" 
+                      autoComplete="new-password"
+                      value={keys.openai}
+                      onChange={(e) => setKeys({...keys, openai: e.target.value})}
+                      placeholder="sk-..." 
+                      className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:ring-2 focus:ring-indigo-500/50 transition-all outline-hidden font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-2 px-1">Google Gemini API Key</label>
+                    <input 
+                      type="password" 
+                      autoComplete="new-password"
+                      value={keys.gemini}
+                      onChange={(e) => setKeys({...keys, gemini: e.target.value})}
+                      placeholder="AIza..." 
+                      className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:ring-2 focus:ring-indigo-500/50 transition-all outline-hidden font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-2 px-1">GitHub Copilot Token</label>
+                    <input 
+                      type="password" 
+                      autoComplete="new-password"
+                      value={keys.copilot}
+                      onChange={(e) => setKeys({...keys, copilot: e.target.value})}
+                      placeholder="ghp_..." 
+                      className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:ring-2 focus:ring-indigo-500/50 transition-all outline-hidden font-mono"
+                    />
+                  </div>
                </div>
                
                <button 
-                 onClick={saveSettings}
-                 className="mt-8 px-12 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-black py-4 rounded-2xl transition-all uppercase text-[10px] tracking-[0.3em]"
+                 type="submit"
+                 className="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-white font-extrabold py-5 rounded-3xl transition-all shadow-[0_20px_40px_rgba(79,70,229,0.1)] active:scale-98 flex items-center justify-center gap-3 uppercase tracking-widest text-xs"
                >
-                 {saved ? "Settings Saved" : "Save Matrix Config"}
+                 {saved ? <Check className="w-5 h-5" /> : <Database className="w-5 h-5" />}
+                 {saved ? "Settings Saved!" : "Save Configuration"}
                </button>
-            </div>
+            </form>
+
+            {/* Collaborators Section Restored */}
+            <section className="p-8 rounded-3xl bg-white/5 border border-indigo-500/20 space-y-6 mt-10">
+               <div className="flex items-center gap-4 mb-2">
+                  <div className="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center">
+                    <Users className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-xl text-white tracking-tight">Team Management</h3>
+                    <p className="text-sm text-slate-500">Add trusted developers by email to give them access to this dashboard.</p>
+                  </div>
+               </div>
+               
+               <form onSubmit={addCollaborator} className="flex gap-4">
+                  <input 
+                    value={newCollab}
+                    onChange={(e) => setNewCollab(e.target.value)}
+                    placeholder="Enter email to invite..." 
+                    className="flex-1 bg-black/40 border border-white/10 rounded-2xl px-5 py-3 text-white outline-hidden focus:ring-1 focus:ring-emerald-500/50 transition-all"
+                  />
+                  <button type="submit" className="bg-white/10 hover:bg-white text-slate-100 hover:text-black px-8 rounded-2xl font-extrabold transition-all uppercase text-xs tracking-widest">Invite</button>
+               </form>
+
+               <div className="space-y-3 mt-8">
+                  {collaborators.map((c, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition group">
+                       <span className="text-sm font-bold text-slate-300">{c}</span>
+                       <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-3 py-1 rounded-lg">Pending Invite</span>
+                          <button 
+                            type="button"
+                            onClick={() => setCollaborators(collaborators.filter(col => col !== c))} 
+                            className="p-1 text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition"
+                          >
+                             <X className="w-4 h-4" />
+                          </button>
+                       </div>
+                    </div>
+                  ))}
+                  {collaborators.length === 0 && (
+                     <div className="text-center py-10 opacity-30 flex flex-col items-center gap-2">
+                        <Users className="w-8 h-8" />
+                        <p className="text-sm font-bold uppercase tracking-widest">No collaborators added yet.</p>
+                     </div>
+                  )}
+               </div>
+            </section>
           </div>
         </div>
       </div>

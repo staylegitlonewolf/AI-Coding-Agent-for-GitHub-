@@ -35,7 +35,7 @@ jobs:
         run: npm ci
         
       - name: Build with Next.js
-        run: npx @next/browser-builders build || npm run build || npx next build
+        run: npm run build
         env:
           NEXT_PUBLIC_BASE_PATH: /AI-Coding-Agent-for-GitHub-
           

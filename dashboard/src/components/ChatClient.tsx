@@ -6,7 +6,7 @@ import OpenAI from "openai";
 
 export function ChatClient({ owner, repo, defaultBranch }: { owner: string; repo: string; defaultBranch: string }) {
   const { openaiKey } = useAppContext();
-  const [messages, setMessages] = useState([{ role: "assistant", content: `Hello! I am your AI agent for ${repo}. Tell me what you'd like to build, fix, or add, and I'll generate the code directly.` }]);
+  const [messages, setMessages] = useState([{ role: "assistant", content: `Agent Neo Matrix Mode activated for ${repo} 🕶️✨\n\nWhat would you like to update and change today?` }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 

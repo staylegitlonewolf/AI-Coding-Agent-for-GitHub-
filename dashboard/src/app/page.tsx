@@ -26,7 +26,10 @@ export default async function Home() {
            <CodeSquare className="text-indigo-400 w-6 h-6"/>
            <h1 className="text-xl font-bold tracking-tight">AI Control Center</h1>
         </div>
-        {session ? <ButtonLogout /> : null}
+        <div className="flex items-center gap-4">
+           {session?.user?.image && <img src={session.user.image} className="w-8 h-8 rounded-full border border-white/20" alt="Avatar" />}
+           {session ? <ButtonLogout /> : null}
+        </div>
       </header>
       
       <div className="flex-1 w-full max-w-6xl mx-auto p-6 md:p-12 relative z-10">
@@ -46,7 +49,10 @@ export default async function Home() {
         ) : (
            <div>
               <div className="mb-8">
-                <h2 className="text-3xl font-bold text-white mb-2">Welcome back, {session.user?.name || session.user?.email || "Agent"}</h2>
+                <h2 className="text-3xl font-bold text-white mb-2 flex items-center gap-4">
+                   {session.user?.image && <img src={session.user.image} className="w-12 h-12 rounded-full border-2 border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.3)]" alt="Avatar" />}
+                   Welcome back, {session.user?.name || session.user?.email || "Agent"}
+                </h2>
                 <p className="text-slate-400">Select a repository below to open the AI Agent Chat and start writing code.</p>
               </div>
 

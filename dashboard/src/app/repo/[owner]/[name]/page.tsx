@@ -49,6 +49,7 @@ export default async function RepoPage({ params }: { params: Promise<{ owner: st
          repo={name} 
          defaultBranch={repoData?.default_branch || "main"} 
          treeData={treeData} 
+         userImage={session.user?.image || null}
       />
     </div>
   );

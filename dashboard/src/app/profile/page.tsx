@@ -89,6 +89,16 @@ export default function ProfilePage() {
 
      const markdownContent = `# AGENT_NEO.MD - MASTER ORCHESTRATION\n\nGenerated on ${new Date().toLocaleString()}\n\n| Order | Agent | Role | Status |\n|---|---|---|---|\n${selectedAgents}\n\n## Instructions\nThis team is configured to work in sequence as defined by the Neo Matrix. Do not deviate from the plan.`;
      
+     try {
+        await fetch("/api/agents/save", {
+           method: "POST",
+           headers: { "Content-Type": "application/json" },
+           body: JSON.stringify({ content: markdownContent })
+        });
+     } catch (e) {
+        console.error("Failed to save master file", e);
+     }
+     
      // Save to local storage mock
      localStorage.setItem("AGENT_NEO_CONTENT", markdownContent);
      

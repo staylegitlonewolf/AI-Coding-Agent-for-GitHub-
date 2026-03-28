@@ -27,7 +27,11 @@ export default async function Home() {
            <h1 className="text-xl font-bold tracking-tight">AI Control Center</h1>
         </div>
         <div className="flex items-center gap-4">
-           {session?.user?.image && <img src={session.user.image} className="w-8 h-8 rounded-full border border-white/20" alt="Avatar" />}
+           {session?.user?.image && (
+              <Link href="/profile" className="hover:opacity-80 transition active:scale-95">
+                 <img src={session.user.image} className="w-8 h-8 rounded-full border border-indigo-500/50 shadow-[0_0_10px_rgba(99,102,241,0.3)]" alt="Avatar" />
+              </Link>
+           )}
            {session ? <ButtonLogout /> : null}
         </div>
       </header>

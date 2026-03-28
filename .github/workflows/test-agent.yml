@@ -1,0 +1,27 @@
+name: Test AI Coding Agent
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+jobs:
+  run-ai-agent:
+    runs-on: ubuntu-latest
+    
+    # We only want to run this when a command is issued
+    if: startsWith(github.event.comment.body, '/ai')
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          # Fetch all history for commit operations to work
+          fetch-depth: 0
+
+      - name: Run AI Control Center Agent
+        uses: ./     # This references the action.yml in the root of the repository
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          llm-api-key: ${{ secrets.GEMINI_API_KEY }}  # You must set this in your repo secrets

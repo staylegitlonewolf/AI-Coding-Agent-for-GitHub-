@@ -1,0 +1,27 @@
+{
+  "name": "ai_control-center",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "package": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=dist/index.js",
+    "dev": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=dist/index.js --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@actions/core": "^3.0.0",
+    "@actions/github": "^9.0.0",
+    "@google/generative-ai": "^0.24.1",
+    "openai": "^6.33.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@vercel/ncc": "^0.38.4",
+    "esbuild": "^0.27.4",
+    "typescript": "^6.0.2"
+  }
+}

@@ -1,0 +1,20 @@
+name: 'AI Coding Agent'
+description: 'Automates tasks within GitHub workflows using Generative AI'
+inputs:
+  github-token:
+    description: 'The GitHub token to authenticate with'
+    required: true
+    default: ${{ github.token }}
+  llm-api-key:
+    description: 'The API key for the LLM provider (e.g. Gemini)'
+    required: true
+  llm-provider:
+    description: 'The LLM provider to use (default: gemini)'
+    required: false
+    default: 'gemini'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+branding:
+  icon: 'cpu'
+  color: 'blue'

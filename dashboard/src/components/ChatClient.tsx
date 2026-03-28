@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Send, Bot, User, ListChecks, Check, GitCommit, X, FileCode2, Ban, Trash2, PlusCircle, ExternalLink } from "lucide-react";
+import { Send, Bot, User, ListChecks, Check, GitCommit, X, FileCode2, Ban, Trash2, PlusCircle, ExternalLink, MessageSquare, Terminal } from "lucide-react";
 import { LearnData } from "./LearnSidebar";
 
 type MessageNode = {
@@ -22,7 +22,8 @@ export function ChatClient({
   tokensUsed, 
   maxTokens, 
   onDeductTokensAction,
-  onOpenLearnAction
+  onOpenLearnAction,
+  onOpenIssuesAction
 }: { 
   owner: string; 
   repo: string; 
@@ -34,6 +35,7 @@ export function ChatClient({
   maxTokens: number; 
   onDeductTokensAction: (n: number) => void; 
   onOpenLearnAction: (data: LearnData) => void;
+  onOpenIssuesAction: () => void;
 }) {
   const STORAGE_KEY = `agent_chat_${owner}_${repo}`;
   const [messages, setMessages] = useState<MessageNode[]>([]);
@@ -106,7 +108,6 @@ export function ChatClient({
   };
 
   const handleAddToDo = (msgContent: string) => {
-     // Generate deep learning data based on the message
      const mockLearn: LearnData = {
         version: "v1.1",
         target: selectedFile || "General Task",
@@ -131,9 +132,9 @@ export function ChatClient({
              <button onClick={clearChat} className="text-[10px] font-bold text-slate-500 hover:text-red-400 uppercase tracking-widest flex items-center gap-1.5 transition-colors">
                 <Trash2 className="w-3.5 h-3.5" /> Clear Logs
              </button>
-             <a href={`https://github.com/${owner}/${repo}/issues`} target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold text-slate-500 hover:text-indigo-400 uppercase tracking-widest flex items-center gap-1.5 transition-colors">
-                <ExternalLink className="w-3.5 h-3.5" /> Github Issues
-             </a>
+             <button onClick={onOpenIssuesAction} className="text-[10px] font-bold text-slate-500 hover:text-indigo-400 uppercase tracking-widest flex items-center gap-1.5 transition-colors">
+                <MessageSquare className="w-3.5 h-3.5" /> Workspace Logs
+             </button>
           </div>
           <div className={`text-[10px] font-bold uppercase tracking-widest ${isLocked ? 'text-red-500 animate-pulse' : 'text-slate-600'}`}>
              {isLocked ? "System Locked" : "Neo Sync: Online"}
@@ -199,14 +200,28 @@ export function ChatClient({
          )}
        </div>
 
-       <div className="p-4 bg-slate-900 border-t border-white/10 flex flex-col gap-2">
+       <div className="p-4 bg-slate-900 border-t border-white/10 flex flex-col gap-2 relative z-20">
           {selectedFile && !isLocked && (
-             <div className="flex items-center gap-2 max-w-4xl mx-auto w-full px-2">
-                <span className="text-xs font-semibold text-slate-400 uppercase tracking-tighter">Target Context:</span>
-                <div className="flex items-center gap-2 bg-linear-to-r from-indigo-600 to-purple-600 border border-white/20 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-lg shadow-indigo-500/20">
-                   <FileCode2 className="w-3 h-3" />
-                   {selectedFile}
-                   <button onClick={onClearFileAction} className="hover:text-white transition-colors ml-1 focus:outline-none bg-black/20 rounded-full p-0.5"><X className="w-2.5 h-2.5" /></button>
+             <div className="flex flex-col gap-1 max-w-4xl mx-auto w-full px-2 mb-2 animate-in fade-in slide-in-from-bottom-2">
+                <div className="flex items-center justify-between">
+                   <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] flex items-center gap-1.5">
+                      <Terminal className="w-3 h-3 text-indigo-400" /> Current Target Context
+                   </span>
+                   <button onClick={onClearFileAction} className="text-[10px] text-slate-500 hover:text-white transition uppercase font-bold tracking-widest flex items-center gap-1 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                      Clear <X className="w-2.5 h-2.5" />
+                   </button>
+                </div>
+                <div className="p-4 bg-black/40 border border-indigo-500/30 rounded-xl relative overflow-hidden group">
+                   <div className="absolute inset-0 bg-linear-to-r from-indigo-500/0 via-indigo-500/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                   <div className="flex items-center gap-4 relative z-10">
+                      <div className="w-10 h-10 bg-indigo-500/20 rounded-lg flex items-center justify-center ring-1 ring-indigo-500/30">
+                         <FileCode2 className="w-6 h-6 text-indigo-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                         <h4 className="text-white font-bold text-sm truncate uppercase tracking-tight">{selectedFile.split('/').pop()}</h4>
+                         <p className="text-[10px] text-slate-500 font-mono truncate">{selectedFile}</p>
+                      </div>
+                   </div>
                 </div>
              </div>
           )}

@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 import { ChatClient } from "./ChatClient";
 import { LearnSidebar, LearnData } from "./LearnSidebar";
-import { FileCode2, Zap, BookOpen } from "lucide-react";
+import { IssuesSidebar } from "./IssuesSidebar"; 
+import { FileCode2, Zap, BookOpen, RefreshCw, MessageSquare } from "lucide-react";
 
 export function RepoWorkspace({ 
   owner, 
@@ -19,6 +20,7 @@ export function RepoWorkspace({
 }) {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [isLearnOpen, setIsLearnOpen] = useState(false);
+  const [isIssuesOpen, setIsIssuesOpen] = useState(false);
   const [learnData, setLearnData] = useState<LearnData | null>(null);
   
   // API Quota token system
@@ -41,9 +43,30 @@ export function RepoWorkspace({
      });
   };
 
+  const updateQuotaAction = () => {
+    // Check for personal keys
+    const savedKeys = localStorage.getItem("agent_user_keys");
+    if (savedKeys) {
+       const keys = JSON.parse(savedKeys);
+       if (keys.openai || keys.gemini) {
+          setTokensUsed(0);
+          localStorage.setItem("agent_mock_tokens", "0");
+          alert("Quota updated! Agent is now using your personal API keys.");
+          return;
+       }
+    }
+    alert("Please provide your own OpenAI or Gemini API keys in the Owner Dashboard to reset the daily quota.");
+  };
+
   const handleOpenLearn = (data: LearnData) => {
      setLearnData(data);
+     setIsIssuesOpen(false);
      setIsLearnOpen(true);
+  };
+
+  const handleOpenIssues = () => {
+     setIsLearnOpen(false);
+     setIsIssuesOpen(true);
   };
 
   const percentage = Math.min((tokensUsed / MAX_TOKENS) * 100, 100);
@@ -78,24 +101,31 @@ export function RepoWorkspace({
            )}
         </div>
         
-        {/* Mock API Quota Block */}
-        <div className="p-4 border-t border-white/10 bg-black/20 m-2 rounded-xl shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]">
+        {/* Mock API Quota Block with Update Action */}
+        <div className="p-4 border-t border-white/10 bg-black/20 m-2 rounded-xl border border-white/10 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]">
            <div className="flex justify-between items-center mb-2 px-1">
               <span className="text-xs font-bold text-slate-400 uppercase flex items-center gap-1.5"><Zap className="w-3 h-3 text-indigo-400"/> API Quota</span>
               <span className={`text-xs font-bold ${tokensUsed >= MAX_TOKENS ? "text-red-400" : "text-slate-300"}`}>{tokensUsed} / {MAX_TOKENS}</span>
            </div>
-           <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+           <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden mb-4">
               <div 
                  className={`h-full transition-all duration-700 ease-out border-r border-white/20 ${tokensUsed >= MAX_TOKENS ? "bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]" : "bg-linear-to-r from-indigo-500 to-purple-500 shadow-[0_0_15px_rgba(99,102,241,0.2)]"}`}
                  style={{ width: `${percentage}%` }}
               />
            </div>
+           
+           <button 
+             onClick={updateQuotaAction}
+             className="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-[10px] font-bold text-indigo-100 py-2 rounded-lg transition-all flex items-center justify-center gap-2 uppercase tracking-widest active:scale-95"
+           >
+              <RefreshCw className="w-3 h-3" /> Update Quota
+           </button>
            {tokensUsed >= MAX_TOKENS && <p className="text-[10px] text-red-400 mt-2 text-center uppercase tracking-wider font-bold animate-pulse">Daily Limit Reached!</p>}
         </div>
       </div>
 
       {/* Main Chat Interface */}
-      <div className={`flex-1 flex flex-col bg-slate-950/50 relative transition-all duration-300 ${isLearnOpen ? 'mr-0' : 'mr-0'}`}>
+      <div className={`flex-1 flex flex-col bg-slate-950/50 relative transition-all duration-300 overflow-hidden`}>
          {treeData && owner && repo ? (
             <ChatClient 
                owner={owner} 
@@ -108,6 +138,7 @@ export function RepoWorkspace({
                maxTokens={MAX_TOKENS}
                onDeductTokensAction={deductTokens}
                onOpenLearnAction={handleOpenLearn}
+               onOpenIssuesAction={handleOpenIssues}
             />
          ) : <div className="p-8 text-slate-400 flex flex-col items-center justify-center h-full">
             <Zap className="w-12 h-12 text-indigo-500 animate-pulse mb-4 opacity-20" />
@@ -120,6 +151,14 @@ export function RepoWorkspace({
          isOpen={isLearnOpen} 
          onCloseAction={() => setIsLearnOpen(false)} 
          data={learnData}
+      />
+
+      {/* Right Issues Sidebar */}
+      <IssuesSidebar 
+         isOpen={isIssuesOpen}
+         onCloseAction={() => setIsIssuesOpen(false)}
+         owner={owner}
+         repo={repo}
       />
     </div>
   );
